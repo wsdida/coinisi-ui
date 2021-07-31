@@ -1,6 +1,6 @@
 
 import {Button, Col, Form, Input, Layout, Modal, Radio, Row, Select, Space, Table, Tag} from "antd";
-import {EyeOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
 import React, {useEffect, useState} from "react";
 
 import {deletePost, queryPost, savePost, updatePost} from "@/services/system/post";
@@ -169,7 +169,7 @@ const Role: React.FC = () => {
               <Option value={"false"}>禁用</Option>
             </Select>
           </Form.Item>
-          <Form.Item style={ {marginLeft: '36%'} }>
+          <Form.Item >
             <Button type={"primary"}  onClick={ ()=>{
               console.log(searchForm.getFieldsValue());
               param = searchForm.getFieldsValue();
@@ -190,10 +190,10 @@ const Role: React.FC = () => {
 
         <Row style={ {marginTop: 30,marginLeft: 40} }>
           <Col>
-            <Button type={"primary"} ghost onClick={showModal}>添加</Button>
+            <Button type={"primary"} icon={<PlusOutlined />} ghost onClick={showModal}>添加</Button>
           </Col>
           <Col style={ {marginLeft: 20} }>
-            <Button type={"primary"} ghost onClick={showModal}>删除</Button>
+            <Button type={"primary"} icon={<DeleteOutlined />} ghost onClick={showModal}>删除</Button>
           </Col>
         </Row>
 
@@ -228,9 +228,9 @@ const Role: React.FC = () => {
               <Input.TextArea placeholder={"请输入备注"} />
             </Form.Item>
             <Form.Item label="状态" name="status">
-              <Radio.Group  buttonStyle="solid">
-                <Radio.Button value={true}>正常</Radio.Button>
-                <Radio.Button value={false}>禁用</Radio.Button>
+              <Radio.Group >
+                <Radio value={true}>正常</Radio>
+                <Radio value={false}>禁止</Radio>
               </Radio.Group>
             </Form.Item>
 

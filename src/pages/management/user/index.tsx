@@ -7,10 +7,9 @@ import {
   Input,
   Layout,
   message,
-  Modal,
+  Modal, Radio,
   Row,
   Space,
-  Switch,
   Table, Tag,
   Tree,
   TreeSelect
@@ -21,18 +20,6 @@ import {addUser, deleteUser, queryUser, updateUser} from "@/services/system/user
 import {selectRole} from "@/services/system/role";
 import {updateUserRole} from "@/services/system/userRole";
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-
-
-
-const data:  any[] | undefined = [];
-for (let i = 0; i < 46; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    age: 32,
-    address: `London, Park Lane no. ${i}`,
-  });
-}// rowSelection objects indicates the need for row selection
 const rowSelection = {
   onChange: (selectedRowKeys: any, selectedRows: any) => {
     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -52,7 +39,6 @@ const onClick = ({ key }) => {
 const User: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [visibleModal, setVisibleModal] = useState(false);
-  const [checkStrictly] = React.useState(false);
   const [modalTitle, setModalTitle] = React.useState("");
   const [treeData,setTreeData] =  React.useState();
   const [params] = React.useState({'deptId':"", 'username': "", 'mobile': '','status': ""});
@@ -61,6 +47,8 @@ const User: React.FC = () => {
   const [roleData,setRoleData] = React.useState();
   const [selectRoleDatas,setSelectRoleDatas] = React.useState();
   const [searchForm] = Form.useForm();
+  const [radioState,setRadioState] = useState(false);
+  const [sexState,setSexState] = useState(false);
   const selectRoleData = async  () =>{
 
     const  result = await  selectRole(params);
@@ -93,47 +81,56 @@ const User: React.FC = () => {
       align: 'center',
       title: '用户名',
       dataIndex: 'username',
+      key: 'username',
     },
     {
       align: 'center',
       title: '昵称',
       dataIndex: 'nickname',
+      key: 'nickname',
     },
     {
       align: 'center',
       title: '性别',
       dataIndex: 'gender',
+      key: 'gender',
     },
     {
       align: 'center',
       title: '部门',
       dataIndex: 'deptId',
+      key: 'deptId',
     },
     {
       align: 'center',
       title: '手机号',
       dataIndex: 'mobile',
+      key: 'mobile',
     },
     {
       align: 'center',
       title: '邮箱',
       dataIndex: 'email',
+      key: 'email',
     },
     {
       align: 'center',
       title: '头像',
       dataIndex: 'avatar',
+      ket: 'avatar',
       render:(record:any)=>(<img src={record} style={{width:20,height:20}}/>)
     },
     {
       align: 'center',
       title: '角色',
       dataIndex: 'name',
+      key: 'name',
     },
     {
       align: 'center',
       title: '状态',
       dataIndex: 'status',
+      key: 'status',
       render:(text: any, record: any) =>(
         <Space>
           {
@@ -147,14 +144,19 @@ const User: React.FC = () => {
       align: 'center',
       title: '创建时间',
       dataIndex: 'gmtCreate',
+      key: 'gmtCreate',
     },
     {
       align: 'center',
       title: '操作',
+      key: 'ca',
+      dataIndex: 'ca',
       render: (record:any) => (
         <Space size="middle">
           <Button type={"link"} onClick={
             ()=>{
+              setSexState(record.gender);
+              setRadioState(record.status);
               modalForm.resetFields();
               modalForm.setFieldsValue( record);
               setVisible(true)
@@ -200,7 +202,7 @@ const User: React.FC = () => {
       <PageHeaderWrapper title={false} />
 
       <Row gutter={[30,20]}  align={'top'} className={styles.body} style={{ marginTop:30,marginRight:4 }} >
-        <Col  span={4}  style={ {marginTop: -10 } }>
+        <Col  span={4}  style={ {marginTop: -0 } }>
           <Tree
             showLine
             switcherIcon={<DownOutlined />}
@@ -226,8 +228,8 @@ const User: React.FC = () => {
                   <Form.Item label="状态:" name="status" style={ {marginLeft:20} }>
                   <Input style={{marginLeft:'1px'}} id={"userId"}  placeholder={"请输入状态"}/>
                   </Form.Item>
-                  <Form.Item style={ {marginLeft:350} }>
-                  <Button style={{marginLeft:'-5px'}}  type="primary" onClick={()=>{
+                  <Form.Item >
+                  <Button  type="primary" onClick={()=>{
                     // @ts-ignore
                     let searchData = searchForm.getFieldValue();
                     // @ts-ignore
@@ -253,7 +255,7 @@ const User: React.FC = () => {
                   }} >查询</Button>
                   </Form.Item>
                   <Form.Item>
-                  <Button style={{ marginLeft: '-5px'}}  type="default" onClick={()=>{
+                  <Button   type="default" onClick={()=>{
                     searchForm.resetFields();
                     params.status = '';
                     params.deptId = '';
@@ -298,9 +300,10 @@ const User: React.FC = () => {
           </Row>
 
           <Table
-            filterMultiple
+            pagination={false}
             style={ {marginLeft:25,marginRight:25,marginTop:8} }
-            bordered={true} rowSelection={{ ...rowSelection, checkStrictly }}
+            bordered={true} rowSelection={{
+              ...rowSelection }}
             // @ts-ignore
                  columns={columns} dataSource={userData} />
         </Col>5
@@ -327,6 +330,7 @@ const User: React.FC = () => {
           treeData={roleData}
           placeholder="请选角色"
           allowClear
+          maxTagCount={3}
           multiple
           treeDefaultExpandAll
           onChange={item => {
@@ -365,13 +369,10 @@ const User: React.FC = () => {
             <Input />
           </Form.Item>
           <Form.Item label="性别:" name="gender">
-            <Switch
-              unCheckedChildren="女"
-              checkedChildren="男"
-              defaultChecked={modalForm.getFieldValue("gender")}
-              onChange={() => {
-              }}
-            />
+            <Radio.Group defaultValue={sexState}>
+              <Radio value={true}>男</Radio>
+              <Radio value={false}>女</Radio>
+            </Radio.Group>
           </Form.Item>
           <Form.Item label="密码:" name="password">
             <Input.Password placeholder="input password"/>
@@ -389,13 +390,10 @@ const User: React.FC = () => {
             <img src={modalForm.getFieldValue("avatar")} style={{width:50,height:50}}/>
           </Form.Item>
           <Form.Item label="状态:" name="status">
-            <Switch
-              unCheckedChildren="停用"
-              checkedChildren="正常"
-              defaultChecked={modalForm.getFieldValue("status")}
-              onChange={() => {
-              }}
-            />
+            <Radio.Group defaultValue={radioState}>
+              <Radio value={true}>正常</Radio>
+              <Radio value={false}>禁止</Radio>
+            </Radio.Group>
           </Form.Item>
         </Form>
       </Modal>

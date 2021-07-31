@@ -138,8 +138,9 @@ const DictItem: React.FC = () => {
   // @ts-ignore
   return (
     <Layout>
-      <PageHeaderWrapper title={false} />
-      <Form form={searchForm} layout="inline">
+      <PageHeaderWrapper />
+      <div style={ {marginTop: 30,backgroundColor: '#FFF'} }>
+      <Form form={searchForm} layout="inline" style={ {marginLeft: 40,marginTop: 40} }>
         <Form.Item label="字典名称" name = "dictCode">
           <Select style={{width: 300}}    defaultValue={selectDefaultValue} >
             {
@@ -179,7 +180,7 @@ const DictItem: React.FC = () => {
           }}>重置</Button>
         </Form.Item>
       </Form>
-      <Space>
+      <Space style={ {marginLeft: 40,marginTop: 30} }>
         <Button onClick={item =>{
           setVisibleStatus(true);
           modalForm.setFieldsValue({'name':'','value':'','dictCode':dictCode,'sort':'','defaulted':true,'status':true,'remark':''});
@@ -188,6 +189,7 @@ const DictItem: React.FC = () => {
         }>添加</Button>
       </Space>
       <Table
+        style={ {marginLeft: 40,marginTop: 8, marginRight: 40, marginBottom: 40} }
         pagination={false}
         bordered={true}
         rowSelection={{
@@ -197,6 +199,7 @@ const DictItem: React.FC = () => {
         columns={columns}
         dataSource={dictItmeData}
       />
+      </div>
       <Modal visible={visibleStatus} title={modalTitle}
              onCancel={item=>{console.log("取消",item) ;setVisibleStatus(false)} }
              onOk={item =>{

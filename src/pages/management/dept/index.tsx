@@ -5,15 +5,14 @@ import {
   Input,
   InputNumber,
   Layout,
-  Modal,
+  Modal, Radio,
   Row,
   Select,
   Space,
-  Switch,
   Table, Tag,
   TreeSelect
 } from "antd";
-import {DeleteOutlined, FileAddTwoTone} from "@ant-design/icons";
+import {DeleteOutlined, FileAddTwoTone, PlusOutlined} from "@ant-design/icons";
 import React, {useEffect, useState} from "react";
 import styles from './index.less'
 import {addDept, queryDept, selectTreeDept, updateDept} from "@/services/system/dept";
@@ -155,10 +154,10 @@ const Index: React.FC = () => {
           <Form.Item label={"部门状态"}  name={['dept', 'status']} style={{marginLeft:30}}>
             <Select placeholder={"请选择状态"} style={ {width: 200} }>
               <Option value="true">正常</Option>
-              <Option value="flase">禁用</Option>
+              <Option value="false">禁用</Option>
             </Select>
           </Form.Item>
-          <Form.Item style={{ marginLeft: 700 }}>
+          <Form.Item >
             <Button type={"primary"} onClick={handlequery}>查询</Button>
           </Form.Item>
           <Form.Item >
@@ -175,10 +174,11 @@ const Index: React.FC = () => {
       <Row style={{ marginLeft:40,marginTop: 30,marginBottom: 30,marginRight: 40}}>
         <Col span={24}>
           <Space align="center" style={{marginBottom: 10}}>
-            <Button type={"primary"} ghost onClick={() => {
+            <Button type={"primary"}  icon={<PlusOutlined />} ghost onClick={() => {
               setIsModalVisible(true)
               setDeptModalTitle("添加部门");
-            }}>添加</Button>
+            }}>添加</Button>      <Button type={"primary"} icon={<DeleteOutlined />} ghost onClick={() => {
+            }}>删除</Button>
           </Space>
           <Table
             bordered={true}
@@ -232,13 +232,10 @@ const Index: React.FC = () => {
             <InputNumber placeholder={"请输入排序"} min={1} max={1000} defaultValue={1} className={styles.input}/>
           </Form.Item>
           <Form.Item label={"部门状态:"} name='status'>
-            <Switch
-              unCheckedChildren="停用"
-              checkedChildren="正常"
-              defaultChecked={modalForm.getFieldValue("status")}
-              onChange={() => {
-              }}
-            />
+            <Radio.Group defaultValue={modalForm.getFieldValue("status")}>
+              <Radio value={true}>正常</Radio>
+              <Radio value={false}>禁止</Radio>
+            </Radio.Group>
           </Form.Item>
         </Form>
       </Modal>

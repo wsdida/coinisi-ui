@@ -1,5 +1,5 @@
-import {Button, Col, Form, Input, Layout, Modal, Row, Select, Space, Switch, Table, Tag, TreeSelect} from "antd";
-import {EyeOutlined} from "@ant-design/icons";
+import {Button, Col, Form, Input, Layout, Modal, Radio, Row, Select, Space,  Table, Tag, TreeSelect} from "antd";
+import {DeleteOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
 import React, {useEffect, useState} from "react";
 import {deleteRole, insertRole, queryList, updateRole, updateRoleMenu} from "@/services/system/role";
 import styles from "@/pages/management/menu/index.less";
@@ -151,7 +151,7 @@ const Role: React.FC = () => {
       dataIndex: 'address',
       key: 'address',
       render: (text:any, record:any) => (
-        <Space align={"center"} style={{width: '200px'}}>
+        <Space align={"center"} >
           <Button type={"link"} icon={<EyeOutlined/>} onClick={()=>{
             setVisible(true);
             // @ts-ignore
@@ -238,13 +238,14 @@ const Role: React.FC = () => {
 
       <Row style={{marginTop: 30,marginLeft: 40}}>
         <Col>
-          <Button type={"primary"} onClick={()=>{
+          <Button type={"primary"}  icon={<PlusOutlined />} ghost onClick={()=>{
             setVisible(true);
             form.resetFields();
             setHiddenValue(false);
             // @ts-ignore
             setMenuTitle("添加角色");
-          }}>添加</Button>
+          }}>添加</Button>    <Button  icon={<DeleteOutlined />}  ghost type={"primary"} onClick={()=>{
+          }}>删除</Button>
         </Col>
       </Row>
 
@@ -275,13 +276,10 @@ const Role: React.FC = () => {
             <Input defaultValue={hiddenValue ?roleData.sort:undefined} />
           </Form.Item>
           <Form.Item name={['role', 'status']} label={"角色状态:"}>
-            <Switch
-              unCheckedChildren="停用"
-              checkedChildren="正常"
-               defaultChecked={roleData.status}
-              onChange={() => {
-              }}
-            />
+            <Radio.Group defaultValue={roleData.status}>
+              <Radio value={true}>正常</Radio>
+              <Radio value={false}>禁止</Radio>
+            </Radio.Group>
           </Form.Item>
           <Form.Item name={['role', 'menuIds']}>
             <TreeSelect
@@ -290,6 +288,7 @@ const Role: React.FC = () => {
               treeData={selectMenu}
               placeholder="请选择部门"
              allowClear
+             maxTagCount={3}
              multiple
              treeDefaultExpandAll
              onChange={item => {

@@ -1,6 +1,6 @@
 
-import {Button, Col, Form, Input, Layout, Modal, Row, Select, Space, Switch, Table, Tag} from "antd";
-import { EyeOutlined} from "@ant-design/icons";
+import {Button, Col, Form, Input, Layout, Modal, Radio, Row, Select, Space,  Table, Tag} from "antd";
+import {DeleteOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
 import React, {useEffect} from "react";
 import { Link } from 'umi';
 import {addDict, deleteDict, queryDict, updateDict} from "@/services/system/dict";
@@ -31,7 +31,6 @@ const rowSelection = {
   },
 };
 const Role: React.FC = () => {
-  const [checkStrictly] = React.useState(false);
   const [modalSwitch,setModalSwitch] = React.useState(false);
   let [params] = React.useState({ 'name': '', 'status': '', 'code': '' });
   const [visible, setVisible] = React.useState(false);
@@ -162,7 +161,7 @@ const Role: React.FC = () => {
 
               </Select>
             </Form.Item>
-            <Form.Item name="names" style={ {marginLeft: '32%'} }>
+            <Form.Item name="names" >
               <Button type={"primary"}  onClick={()=>{
                 const form = searchForm.getFieldsValue();
                 params = form
@@ -180,14 +179,15 @@ const Role: React.FC = () => {
           </Form>
         <Row  style={ {marginLeft:45,marginTop: 25} }>
           <Col>
-            <Button type={"primary"} ghost onClick={showModal}>添加</Button>
+            <Button type={"primary"}  icon={<PlusOutlined />} ghost onClick={showModal}>添加</Button>
           </Col>
           <Col style={{ marginLeft:15}}>
-            <Button type={"primary"} ghost   onClick={showModal}>删除</Button>
+            <Button type={"primary"}  icon={<DeleteOutlined />} ghost   onClick={showModal}>删除</Button>
           </Col>
         </Row>
 
-            <Table style={ {marginLeft:45,marginRight: 45,marginTop: 10} } pagination={false} align={"center"} bordered={true} rowSelection={{ ...rowSelection, checkStrictly }}
+            <Table style={ {marginLeft:45,marginRight: 45,marginTop: 10} } pagination={false} align={"center"} bordered={true}
+                   rowSelection={{ ...rowSelection }}
               // @ts-ignore
                    columns={columns} dataSource={dictData} />
 
@@ -213,14 +213,10 @@ const Role: React.FC = () => {
               <Input.TextArea placeholder={"请输入备注"} />
             </Form.Item>
             <Form.Item name ="status" label="状态">
-             <Switch unCheckedChildren="禁用"
-                   checkedChildren="正常"
-                 checked={modalSwitch}
-              onChange={item =>{
-                setModalSwitch(item);
-              }
-              }
-             />
+              <Radio.Group defaultValue={modalSwitch}>
+                <Radio value={true}>正常</Radio>
+                <Radio value={false}>禁止</Radio>
+              </Radio.Group>
             </Form.Item>
           </Form>
         </Modal>

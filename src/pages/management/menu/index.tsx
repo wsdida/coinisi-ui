@@ -19,7 +19,7 @@ import {
 import React, {useState, useEffect} from "react";
 import styles from './index.less'
 import {currentUserMenu} from "@/services/ant-design-pro/api";
-import {DeleteOutlined, FileAddTwoTone, UploadOutlined} from "@ant-design/icons";
+import {DeleteOutlined,  PlusOutlined, UploadOutlined} from "@ant-design/icons";
 import {addMenu, deleteMenu, editMenu, selectTreeMenu} from "@/services/system/menu";
 import {PageHeaderWrapper} from "@ant-design/pro-layout";
 import {getToken} from "@/utils/TokenUtil";
@@ -150,7 +150,7 @@ const Index: React.FC = () => {
       render: (text: any, record: any, index: any) =>
 
         <Space>
-          <Button type={"link"} icon={<FileAddTwoTone/>} onClick={() => {
+          <Button type={"link"}  onClick={() => {
             console.log(record)
             // @ts-ignore
             setMenuTitle("编辑菜单");
@@ -159,7 +159,7 @@ const Index: React.FC = () => {
             setHiddenValue(true)
             setIsModalVisible(true);
           }}>编辑</Button>
-          <Button type={"link"} icon={<DeleteOutlined/>} onClick={item => {
+          <Button type={"link"}  onClick={item => {
             deleteMenu(record.id);
             params.name="";
             params.visible="";
@@ -206,9 +206,11 @@ const Index: React.FC = () => {
                   <Option value={'0'}>禁用</Option>
                 </Select>
             </Form.Item>
-            <Form.Item wrapperCol={{offset: 8, span: 16}}>
+            <Form.Item wrapperCol={{offset: 8, span: 16}}  >
               <Space>
-                <Button type="primary" htmlType="submit" onClick={item => {
+                <Button type="primary"
+
+                        htmlType="submit" onClick={item => {
                   const searchData = searchForm.getFieldValue("menu");
                   if(searchData!=undefined){
                     if(searchData.name==null){
@@ -249,7 +251,9 @@ const Index: React.FC = () => {
       <Row style={{marginLeft: 45,marginRight: 45,marginTop: 20}}>
         <Col span={24}>
           <Space align="center" style={{marginBottom: 10}}>
-            <Button type={"primary"} onClick={() => {
+            <Button type={"primary"}
+                    icon={<PlusOutlined />}
+                    ghost onClick={() => {
               form.resetFields();
               setIsModalVisible(true);
               // @ts-ignore
@@ -258,6 +262,9 @@ const Index: React.FC = () => {
               // @ts-ignore
               setMenuData([])
             }}>添加</Button>
+            <Button type={"primary"}
+                    icon={<DeleteOutlined />}
+                    ghost>删除</Button>
           </Space>
           <Table
             bordered={true}

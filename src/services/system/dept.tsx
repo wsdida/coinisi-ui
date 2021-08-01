@@ -64,4 +64,13 @@ export async function updateDept(params:SYSTEM.Dept, options?: { [p: string]: an
   }).then(function (res?: any) {
     return res.data;
   });
+}export async function deleteDept(params:SYSTEM.Dept, options?: { [p: string]: any }) {
+  return request<SYSTEM.Dept>('/coinisi/coinisi-system/sys-dept/delete', {
+    method: 'DELETE',
+    requestType: 'form',
+    data:params,
+    ...(options || {}),
+  }).then(function (res?: any) {
+    return res.data;
+  });
 }

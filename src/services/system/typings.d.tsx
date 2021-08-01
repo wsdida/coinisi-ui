@@ -18,14 +18,15 @@ declare namespace SYSTEM {
     }[];
   }
   type Role = {
-    id?: undefined;
-    name?: undefined;
-    sort?: undefined;
-    status?: undefined;
-    deleted?: undefined;
-    gmtCreate?: undefined;
-    gmtModified?: undefined;
-    identification?: undefined;
+    key?: number;
+    id?: number;
+    name?: string;
+    sort?: number;
+    status?: boolean;
+    deleted?: boolean;
+    gmtCreate?: string;
+    gmtModified?: string;
+    identification?: string;
     menuIds?: [];
   }
   type Dept = {
@@ -44,6 +45,14 @@ declare namespace SYSTEM {
     gmtModified?: string;
     children?: Dept[];
   }
+  type ResponseData={
+    current?: number;
+    size?: number;
+    total?: number;
+    pages?: number;
+    records?: [];
+    searchCount?: boolean;
+  }
   type User ={
     id?: string;
     deptId?:string;
@@ -61,6 +70,7 @@ declare namespace SYSTEM {
   }
 
   type Dict = {
+    key?: string;
     id?:string;
     name?:string;
     code?:string;
@@ -93,4 +103,5 @@ type Post ={
     updateTime?:string;
     remark?:string;
 }
+
 }

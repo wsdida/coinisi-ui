@@ -50,7 +50,7 @@ export async function savePost(params:SYSTEM.Post, options?: { [p: string]: any 
 }
 /** 获取角色 GET /api/currentUser */
 export async function deletePost(params:SYSTEM.Post, options?: { [p: string]: any }) {
-
+console.log("jiekou",params)
   return request<SYSTEM.Post>('/coinisi/coinisi-system/sys-post/delete', {
     method: 'DELETE',
     requestType: 'form',

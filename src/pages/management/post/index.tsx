@@ -23,19 +23,8 @@ for (let i = 0; i < 46; i++) {
 
 
 
-const rowSelection = {
-  onChange: (selectedRowKeys: any, selectedRows: any) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  onSelect: (record: any, selected: any, selectedRows: any) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-};
+
 const Role: React.FC = () => {
-  const [checkStrictly] = React.useState(false);
   const [visible, setVisible] = React.useState(false);
   const [confirmLoading, setConfirmLoading] = React.useState(false);
   const [postData,setPostData] = useState();
@@ -43,7 +32,20 @@ const Role: React.FC = () => {
   const [modalForm] = Form.useForm();
   const [modalTitle,setModalTitle] = useState("");
 
-  let [param] = useState({'postCode':'','postName':'','status':''});
+  let [param] = useState({'postCode':'','postName':'','status':'','postId':''});
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      param.postId = selectedRowKeys;
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    },
+    onSelect: (record: any, selected: any, selectedRows: any) => {
+
+      console.log(record, selected, selectedRows);
+    },
+    onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
+      console.log(selected, selectedRows, changeRows);
+    },
+  };
   const showModal = () => {
     setModalTitle("添加岗位")
     setVisible(true);
@@ -52,6 +54,11 @@ const Role: React.FC = () => {
   const fetchData = async () => {
     // @ts-ignore
     const result = await queryPost(param);
+    // @ts-ignore
+    for (let i = 0; i < result.length; i++) {
+      result[i].key = result[i].postId;
+    };
+    console.log("res",result);
     // @ts-ignore
     setPostData(result);
   };
@@ -80,6 +87,11 @@ const Role: React.FC = () => {
   };
   const columns = [
     {
+      hidden: 'true',
+      align: 'center',
+      dataIndex: 'postId',
+      key: 'postId',
+    },{
       align: 'center',
       title: '岗位名称',
       dataIndex: 'postName',
@@ -148,7 +160,7 @@ const Role: React.FC = () => {
     },
   ];
 
-  // @ts-ignore
+
   return(
 
       <Layout  >
@@ -193,14 +205,20 @@ const Role: React.FC = () => {
             <Button type={"primary"} icon={<PlusOutlined />} ghost onClick={showModal}>添加</Button>
           </Col>
           <Col style={ {marginLeft: 20} }>
-            <Button type={"primary"} icon={<DeleteOutlined />} ghost onClick={showModal}>删除</Button>
+            <Button type={"primary"} icon={<DeleteOutlined />} ghost onClick={()=>{
+              // @ts-ignore
+              deletePost(param);
+              setTimeout(function () {
+                fetchData();
+              }, 200);
+            }}>删除</Button>
           </Col>
         </Row>
 
             <Table
               style={ {marginTop: 10,marginLeft: 40,marginRight: 40,marginBottom: 30} }
               pagination={false}
-               bordered={true} rowSelection={{ ...rowSelection, checkStrictly }}
+               bordered={true} rowSelection={{ ...rowSelection }}
               // @ts-ignore
                    columns={columns} dataSource={postData} />
         </div>

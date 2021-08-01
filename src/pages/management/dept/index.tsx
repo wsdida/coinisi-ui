@@ -15,20 +15,10 @@ import {
 import {DeleteOutlined, FileAddTwoTone, PlusOutlined} from "@ant-design/icons";
 import React, {useEffect, useState} from "react";
 import styles from './index.less'
-import {addDept, queryDept, selectTreeDept, updateDept} from "@/services/system/dept";
+import {addDept, deleteDept, queryDept, selectTreeDept, updateDept} from "@/services/system/dept";
 import {PageHeaderWrapper} from "@ant-design/pro-layout";
 const {Option} =Select;
-const rowSelection = {
-  onChange: (selectedRowKeys: any, selectedRows: any) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  onSelect: (record: any, selected: any, selectedRows: any) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-};
+
 
 const Index: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -36,11 +26,23 @@ const Index: React.FC = () => {
   const [modalDeptState, setModalDeptState] = useState({});
   const [deptModalTitle, setDeptModalTitle] = useState("");
   const [deptData, setDeptData] = useState();
-  const [params] = useState({"name": undefined, "status": undefined});
+  const [params] = useState({"name": undefined, "status": undefined,'id':undefined});
   const [queryForm] = Form.useForm();
   // 弹窗form
   const [modalForm] =   Form.useForm();
   const [treeData, setTreeData] = useState();
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      params.id = selectedRowKeys;
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    },
+    onSelect: (record: any, selected: any, selectedRows: any) => {
+      console.log(record, selected, selectedRows);
+    },
+    onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
+      console.log(selected, selectedRows, changeRows);
+    },
+  };
   const columns = [
     {
       align: 'center',
@@ -108,7 +110,15 @@ const Index: React.FC = () => {
             setDeptModalTitle("编辑部门");
           }
           }>编辑</Button>
-          <Button type={"link"} icon={<DeleteOutlined/>}>删除</Button>
+          <Button type={"link"} icon={<DeleteOutlined/>}
+          onClick={()=>{
+             deleteDept(record);
+            setTimeout(() => {
+              queryDeptData();
+            }, 200);
+          }
+          }
+          >删除</Button>
         </Space>
       ,
     },
@@ -120,6 +130,10 @@ const Index: React.FC = () => {
   };
   const queryDeptData = async () => {
     const result = await queryDept(params);
+    result.forEach((item: { key: any; id: any; })=>{
+      item.key = item.id;
+    });
+    console.log("result",result);
     // @ts-ignore
     setDeptData();
     setDeptData(result);
@@ -139,7 +153,9 @@ const Index: React.FC = () => {
           params.status = queryParam.status;
       }
     }
-    queryDeptData();
+    setTimeout(() => {
+      queryDeptData();
+    }, 200);
   };
 
   return (
@@ -167,7 +183,9 @@ const Index: React.FC = () => {
               // @ts-ignore
               params.status = '';
               queryForm.resetFields();
-              queryDeptData();}} >重置</Button>
+              setTimeout(() => {
+                queryDeptData();
+              }, 200);}} >重置</Button>
           </Form.Item>
         </Form>
       </Space>
@@ -177,7 +195,12 @@ const Index: React.FC = () => {
             <Button type={"primary"}  icon={<PlusOutlined />} ghost onClick={() => {
               setIsModalVisible(true)
               setDeptModalTitle("添加部门");
-            }}>添加</Button>      <Button type={"primary"} icon={<DeleteOutlined />} ghost onClick={() => {
+            }}>添加</Button>
+            <Button type={"primary"} icon={<DeleteOutlined />} ghost onClick={() => {
+              deleteDept(params);
+              setTimeout(() => {
+                queryDeptData();
+              }, 200);
             }}>删除</Button>
           </Space>
           <Table

@@ -8,26 +8,29 @@ import {PageHeaderWrapper} from "@ant-design/pro-layout";
 
 const {Option} = Select;
 
-const rowSelection = {
-  onChange: (selectedRowKeys: any, selectedRows: any) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  onSelect: (record: any, selected: any, selectedRows: any) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-};
+
 const Role: React.FC = () => {
   const [hiddenValue, setHiddenValue] = useState(false);
-  const [checkStrictly] = React.useState(false);
+
   const [selectMenu, setSelectMenu] = useState();
   const [visible, setVisible] = React.useState(false);
   const [confirmLoading, setConfirmLoading] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [params] = React.useState({"name": '', "identification": '', "status": '',"id":'',"menuIds": '',"sort": ''});
   const [menuTitle, setMenuTitle] = useState();
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      params.id = selectedRowKeys;
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    },
+    onSelect: (record: any, selected: any, selectedRows: any) => {
+
+      console.log(record, selected, selectedRows);
+    },
+    onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
+      console.log(selected, selectedRows, changeRows);
+    },
+  };
   let [roleData,setRoleData] = useState({
     "id": undefined,
     "name": undefined,
@@ -42,10 +45,14 @@ const Role: React.FC = () => {
   const [searchForm] = Form.useForm();
   const [form] = Form.useForm();
   const fetchData = async () => {
-    const result = await queryList(params);
-    setData([]);
+    const results = await queryList(params);
     // @ts-ignore
-    setData(result);
+    for (let i = 0; i < results.length; i++) {
+       results[i].key = results[i].id;
+    };
+    console.log("re",results);
+    // @ts-ignore
+    setData(results);
   };
   const updateData = async () => {
     await updateRole(params);
@@ -74,7 +81,10 @@ const Role: React.FC = () => {
     if(menuTitle =="添加角色"){
 
       insertRole(formdata);
-      fetchData();
+      setTimeout(() => {
+        fetchData();
+      }, 200);
+
     }else{
       if(formdata.status != null){
         roleData.status = formdata.status;
@@ -110,26 +120,33 @@ const Role: React.FC = () => {
   const columns = [
     {
       align:'center',
+      title: 'id',
+      dataIndex: 'id',
+      hidden: true,
+      key: 'id',
+
+    },{
+      align:'center',
       title: '角色名称',
       dataIndex: 'name',
-      key: 'name',
+
     },
     {
       align:'center',
       title: '角色标识',
       dataIndex: 'identification',
-      key: 'identification',
+
     }, {
       align:'center',
       title: '角色排序',
       dataIndex: 'sort',
-      key: 'sort',
+
     },
     {
       align:'center',
       title: '角色状态',
       dataIndex: 'status',
-      key: 'status',
+
       render:(text: any, record: any) =>(
         <Space>
           {
@@ -143,13 +160,13 @@ const Role: React.FC = () => {
       align:'center',
       title: '创建时间',
       dataIndex: 'gmtCreate',
-      key: 'gmtCreate',
+
     },
     {
       align:'center',
       title: '操作',
       dataIndex: 'address',
-      key: 'address',
+
       render: (text:any, record:any) => (
         <Space align={"center"} >
           <Button type={"link"} icon={<EyeOutlined/>} onClick={()=>{
@@ -221,7 +238,9 @@ const Role: React.FC = () => {
                 params.status = 1;
               }
             }
-            fetchData();
+            setTimeout(() => {
+              fetchData();
+            }, 200);
 
           }}>查询</Button>
 
@@ -231,7 +250,9 @@ const Role: React.FC = () => {
             params.name = '';
             params.status = '';
             params.identification = '';
-            fetchData();
+            setTimeout(() => {
+              fetchData();
+            }, 200);
           }}>重置</Button>
         </Form.Item>
       </Form>
@@ -245,13 +266,18 @@ const Role: React.FC = () => {
             // @ts-ignore
             setMenuTitle("添加角色");
           }}>添加</Button>    <Button  icon={<DeleteOutlined />}  ghost type={"primary"} onClick={()=>{
+          // @ts-ignore
+          deleteRole(params);
+          setTimeout(() => {
+            fetchData();
+          }, 200);
           }}>删除</Button>
         </Col>
       </Row>
 
       <Table
         style={{marginTop: 10,marginRight: 40,marginLeft: 40,marginBottom: 30}}
-        pagination={false} bordered={true} rowSelection={{...rowSelection, checkStrictly}}
+        pagination={false} bordered={true} rowSelection={{...rowSelection}}
              // @ts-ignore
              columns={columns} dataSource={data}/>
       </div>

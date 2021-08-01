@@ -34,7 +34,7 @@ export async function addDict(params: SYSTEM.Dict, options?: { [p: string]: any 
 }
 /** 获取角色 GET /api/currentUser */
 export async function deleteDict(params: SYSTEM.Dict, options?: { [p: string]: any }) {
-  console.log("接口请求",params)
+  console.log("接口请求 delete",params)
   return request<SYSTEM.Dict>('/coinisi/coinisi-system/sys-dict', {
     method: 'DELETE',
     requestType: 'form',

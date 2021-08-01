@@ -27,17 +27,7 @@ import {UploadFile} from "antd/lib/upload/interface";
 
 
 const {Option} = Select;
-const rowSelection = {
-  onChange: (selectedRowKeys: any, selectedRows: any) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  onSelect: (record: any, selected: any, selectedRows: any) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-};
+
 
 const layout = {
   labelCol: {span: 8},
@@ -74,11 +64,23 @@ const Index: React.FC = () => {
     "icon": undefined,
     "id": undefined,
   });
-  const [params] = useState({"name": '',visible: ''});
+  const [params] = useState({"name": '','visible': '','id':''});
   const [value, setValue] = useState(0);
   const [menuTitle, setMenuTitle] = useState();
   const [form] = Form.useForm();
   const [searchForm] = Form.useForm();
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      params.id = selectedRowKeys;
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    },
+    onSelect: (record: any, selected: any, selectedRows: any) => {
+      console.log(record, selected, selectedRows);
+    },
+    onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
+      console.log(selected, selectedRows, changeRows);
+    },
+  };
   const columns = [{
     align: 'center',
     title: '菜单名称',
@@ -264,7 +266,14 @@ const Index: React.FC = () => {
             }}>添加</Button>
             <Button type={"primary"}
                     icon={<DeleteOutlined />}
-                    ghost>删除</Button>
+                    ghost
+            onClick={()=>{
+              deleteMenu(params.id);
+              setTimeout(() => {
+                fetchData();
+              }, 200);
+            }}
+            >删除</Button>
           </Space>
           <Table
             bordered={true}

@@ -2,15 +2,21 @@
 import { request } from 'umi';
 
 /** 获取角色 GET /api/currentUser */
-export async function queryUser(params: { deptId?: string; username?: string; mobile?: string;status?: string }, options?: { [p: string]: any }) {
-
-  return request<SYSTEM.User>('/coinisi/coinisi-system/sys-user/queryUser', {
+export async function queryUser(params: { deptId?: string; username?: string; mobile?: string;status?: string;current?: string;size?: string }, options?: { [p: string]: any }) {
+ if(params.current==''){
+   params.current = '1';
+ } if(params.size==''){
+   params.size = '3';
+ }
+  return request<SYSTEM.ResponseData>('/coinisi/coinisi-system/sys-user/queryUser', {
     method: 'GET',
     params: {
       'deptId': params.deptId,
       'username': params.username,
       'mobile': params.mobile,
       'status': params.status,
+      'current': params.current,
+      'size': params.size,
     },
     ...(options || {}),
     // @ts-ignore
@@ -48,7 +54,7 @@ export async function updateUser(params: SYSTEM.User, options?: { [p: string]: a
   });
 }
 /** 获取角色 GET /api/currentUser */
-export async function deleteUser(params: { id?: string;}, options?: { [p: string]: any }) {
+export async function deleteUser(params: string, options?: { [p: string]: any }) {
   console.log(params)
   return request<SYSTEM.User>('/coinisi/coinisi-system/sys-user/delete', {
     method: 'GET',

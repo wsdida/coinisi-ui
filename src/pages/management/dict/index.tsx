@@ -8,31 +8,10 @@ import {PageHeaderWrapper} from "@ant-design/pro-layout";
 
 const { Option } = Select;
 
-const data :any = [];
-for (let i = 0; i < 46; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    age: 32,
-    address: `London, Park Lane no. ${i}`,
-  });
-}
 
-
-const rowSelection = {
-  onChange: (selectedRowKeys: any, selectedRows: any) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  onSelect: (record: any, selected: any, selectedRows: any) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-};
 const Role: React.FC = () => {
   const [modalSwitch,setModalSwitch] = React.useState(false);
-  let [params] = React.useState({ 'name': '', 'status': '', 'code': '' });
+  let [params] = React.useState({ 'name': '', 'status': '', 'code': '',id:'' });
   const [visible, setVisible] = React.useState(false);
   const [modalTitle,setModalTitle] = React.useState("");
   const [confirmLoading, setConfirmLoading] = React.useState(false);
@@ -44,9 +23,28 @@ const Role: React.FC = () => {
     setModalTitle("添加字典")
     setVisible(true);
   };
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      params.id = selectedRowKeys;
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    },
+    onSelect: (record: any, selected: any, selectedRows: any) => {
+
+      console.log(record, selected, selectedRows);
+    },
+    onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
+      console.log(selected, selectedRows, changeRows);
+    },
+  };
   const queryDictData = async () => {
     // @ts-ignore
     const result = await queryDict(params);
+    // @ts-ignore
+    for (let i = 0; i < result.length; i++) {
+      // @ts-ignore
+      result[i].key =result[i].id;
+    }
+    console.log(result);
     // @ts-ignore
     setDictData(result);
   };
@@ -64,7 +62,7 @@ const Role: React.FC = () => {
     setTimeout(() => {
       setVisible(false);
       setConfirmLoading(false);
-    }, 2000);
+    }, 200);
   };
   const handleCancel = () => {
     console.log('Clicked cancel button');
@@ -130,7 +128,8 @@ const Role: React.FC = () => {
           }
           }>编辑</Button>
           <Button type={"link"} icon={<EyeOutlined />} onClick={()=>{
-          deleteDict(record);
+          // @ts-ignore
+            deleteDict(record);
             queryDictData();
           }
           }>删除</Button>
@@ -182,7 +181,16 @@ const Role: React.FC = () => {
             <Button type={"primary"}  icon={<PlusOutlined />} ghost onClick={showModal}>添加</Button>
           </Col>
           <Col style={{ marginLeft:15}}>
-            <Button type={"primary"}  icon={<DeleteOutlined />} ghost   onClick={showModal}>删除</Button>
+            <Button type={"primary"}  icon={<DeleteOutlined />} ghost   onClick={()=>{
+              // @ts-ignore
+              deleteDict(params);
+              setTimeout(() => {
+                setVisible(false);
+                setConfirmLoading(false);
+                queryDictData();
+              }, 200);
+
+            }}>删除</Button>
           </Col>
         </Row>
 

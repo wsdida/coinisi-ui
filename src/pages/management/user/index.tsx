@@ -14,23 +14,12 @@ import {
   Tree,
   TreeSelect
 } from "antd";
-import {DeleteOutlined, DownOutlined, PlusOutlined, ReloadOutlined,   UserAddOutlined} from "@ant-design/icons";
+import {DeleteOutlined, DownOutlined, PlusOutlined} from "@ant-design/icons";
 import { selectTreeDept} from "@/services/system/dept";
 import {addUser, deleteUser, queryUser, updateUser} from "@/services/system/user";
 import {selectRole} from "@/services/system/role";
 import {updateUserRole} from "@/services/system/userRole";
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-const rowSelection = {
-  onChange: (selectedRowKeys: any, selectedRows: any) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  onSelect: (record: any, selected: any, selectedRows: any) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-};
 // @ts-ignore
 const onClick = ({ key }) => {
   message.info(`Click on item ${key}`);
@@ -41,11 +30,12 @@ const User: React.FC = () => {
   const [visibleModal, setVisibleModal] = useState(false);
   const [modalTitle, setModalTitle] = React.useState("");
   const [treeData,setTreeData] =  React.useState();
-  const [params] = React.useState({'deptId':"", 'username': "", 'mobile': '','status': ""});
+  let [params] = React.useState({'deptId':"", 'username': "", 'mobile': '','status': "",'current':'','size':''});
   const [modalForm] = Form.useForm();
-  const [userData,setUserData] = React.useState();
-  const [roleData,setRoleData] = React.useState();
+  const [userData,setUserData] = useState();
+  const [roleData,setRoleData] = useState();
   const [selectRoleDatas,setSelectRoleDatas] = React.useState();
+   let  [res] =  useState({'current':0,'total':0,'size':0,'pages':0});
   const [searchForm] = Form.useForm();
   const [radioState,setRadioState] = useState(false);
   const [sexState,setSexState] = useState(false);
@@ -55,8 +45,6 @@ const User: React.FC = () => {
     // @ts-ignore
     setRoleData(result);
   }
-
-
   const selectRoleDatad = async  () =>{
     const  result = await  selectRole(params);
     let a = JSON.parse(JSON.stringify(result));
@@ -68,6 +56,20 @@ const User: React.FC = () => {
     // @ts-ignore
     setSelectRoleDatas(d);
   }
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, selectedRows: any) => {
+      params.deptId =selectedRowKeys;
+      console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    },
+    onSelect: (record: any, selected: any, selectedRows: any) => {
+
+      console.log(record, selected, selectedRows);
+    },
+    onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
+      console.log(selected, selectedRows, changeRows);
+    },
+  };
   // @ts-ignore
   const columns = [
     {
@@ -94,6 +96,14 @@ const User: React.FC = () => {
       title: '性别',
       dataIndex: 'gender',
       key: 'gender',
+      render:(text: any, record: any) =>(
+        <Space>
+          {
+            record.gender?<Tag color="success"> 男</Tag>:<Tag color="default">女</Tag>
+          }
+        </Space>
+
+      )
     },
     {
       align: 'center',
@@ -151,10 +161,12 @@ const User: React.FC = () => {
       title: '操作',
       key: 'ca',
       dataIndex: 'ca',
-      render: (record:any) => (
+      render: (text: any,record:any) => (
         <Space size="middle">
           <Button type={"link"} onClick={
             ()=>{
+              console.log(record.gender)
+              console.log(record.status)
               setSexState(record.gender);
               setRadioState(record.status);
               modalForm.resetFields();
@@ -185,9 +197,21 @@ const User: React.FC = () => {
     setTreeData(r);
   };
   const queryUserData = async  () =>{
-    const  result = await  queryUser(params);
+    const  data = await  queryUser(params);
     // @ts-ignore
-    setUserData(result);
+   res.current = data.current;
+    // @ts-ignore
+   res.pages = data.pages;
+   // @ts-ignore
+    res.total = data.total;
+    // @ts-ignore
+   res.size = data.size;
+    // @ts-ignore
+    data.records.forEach((item: { key: any; id: any; }) =>{
+     item.key= item.id;
+    });
+    // @ts-ignore
+    setUserData(data.records);
   }
 
   useEffect(() => {
@@ -197,6 +221,8 @@ const User: React.FC = () => {
   }, [])
   // @ts-ignore
 
+  // @ts-ignore
+  // @ts-ignore
   return(
     <Layout>
       <PageHeaderWrapper title={false} />
@@ -286,21 +312,37 @@ const User: React.FC = () => {
                 <Button
                   type={"primary"}
                         ghost
-                        icon={<DeleteOutlined />}>删除</Button>
-                <Button
-                        color=''
-                        icon={<UserAddOutlined />}>角色重置</Button>
-                <Button type={"ghost"}
-                        color=''
-                        icon={<ReloadOutlined />}
-                     >密码重置</Button>
+                        icon={<DeleteOutlined />} onClick={()=>{
+                  deleteUser(params.deptId);
+                  setTimeout(function () {
+                    params.status = '';
+                    params.deptId = '';
+                    params.mobile = '';
+                    params.username = '';
+                    queryUserData();
+                  }, 200);
+
+                }}>删除</Button>
+
 
               </Space>
             </Col>
           </Row>
-
           <Table
-            pagination={false}
+            pagination={
+              {
+              pageSize: res.size,
+              total: res.total,
+                showSizeChanger: true,
+              showQuickJumper: true,
+              current: res.current,
+                pageSizeOptions:['3','10','20'],
+                onChange:(page:any,pageSize:any)=>{
+                 params.current = page ;
+                 params.size = pageSize;
+                  queryUserData();
+                },
+            }}
             style={ {marginLeft:25,marginRight:25,marginTop:8} }
             bordered={true} rowSelection={{
               ...rowSelection }}
@@ -354,9 +396,7 @@ const User: React.FC = () => {
             // @ts-ignore
             updateUser(modalForm.getFieldValue())
           }
-
           setVisible(false)
-
         }}
         onCancel={() => setVisible(false)}
 

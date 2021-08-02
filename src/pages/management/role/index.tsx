@@ -1,5 +1,5 @@
 import {Button, Col, Form, Input, Layout, Modal, Radio, Row, Select, Space,  Table, Tag, TreeSelect} from "antd";
-import {DeleteOutlined, EyeOutlined, PlusOutlined} from "@ant-design/icons";
+import { EyeOutlined, PlusOutlined} from "@ant-design/icons";
 import React, {useEffect, useState} from "react";
 import {deleteRole, insertRole, queryList, updateRole, updateRoleMenu} from "@/services/system/role";
 import styles from "@/pages/management/menu/index.less";
@@ -265,13 +265,7 @@ const Role: React.FC = () => {
             setHiddenValue(false);
             // @ts-ignore
             setMenuTitle("添加角色");
-          }}>添加</Button>    <Button  icon={<DeleteOutlined />}  ghost type={"primary"} onClick={()=>{
-          // @ts-ignore
-          deleteRole(params);
-          setTimeout(() => {
-            fetchData();
-          }, 200);
-          }}>删除</Button>
+          }}>添加</Button>
         </Col>
       </Row>
 

@@ -103,5 +103,19 @@ type Post ={
     updateTime?:string;
     remark?:string;
 }
-
+type Log ={
+    id?: string;
+  loginName?: string;
+  ip?: string;
+  station?: string;
+  system?: string;
+  browser?: string;
+  loginStatus?:string;
+  createTime?: string;
+  createUser?: string;
+  updateTime?: string;
+  updateUser?: string;
+  status?: number;
+  isDeleted?: number;
+}
 }

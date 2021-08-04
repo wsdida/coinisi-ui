@@ -219,10 +219,6 @@ const User: React.FC = () => {
     selectDeptData();
     selectRoleData();
   }, [])
-  // @ts-ignore
-
-  // @ts-ignore
-  // @ts-ignore
   return(
     <Layout>
       <PageHeaderWrapper title={false} />

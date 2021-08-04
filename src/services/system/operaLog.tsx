@@ -3,10 +3,10 @@ import { request } from 'umi';
 
 
 /** 查询日志表 GET /api/currentUser */
-export async function queryList(params:{'current':number;'size':number;'loginName':string;'system':string;'ids':string},options?: { [key: string]: any }) {
+export async function queryOperaLogList(params:SYSTEM.OperaLog,options?: { [key: string]: any }) {
   console.log("接口参数",params);
-  return request<SYSTEM.ResponseData>('/coinisi/coinisi-system/sys-log/list', {
-    method: 'GET',
+  return request<SYSTEM.ResponseData>('/coinisi/coinisi-system/sys-operaLog/list', {
+    method: 'POST',
     params:params,
     ...(options || {}),
     // @ts-ignore
@@ -15,9 +15,9 @@ export async function queryList(params:{'current':number;'size':number;'loginNam
     return res.data;
   });
 }/** 删除日志信息 GET /api/currentUser */
-export async function removes(params:{'ids':string},options?: { [key: string]: any }) {
-  return request<SYSTEM.Log>('/coinisi/coinisi-system/sys-log/removes', {
-    method: 'DELETE',
+export async function removeOperaLog(params:{'ids':string},options?: { [key: string]: any }) {
+  return request<SYSTEM.Log>('/coinisi/coinisi-system/sys-operaLog/remove', {
+    method: 'POST',
     requestType: 'form',
     data:params,
     ...(options || {}),

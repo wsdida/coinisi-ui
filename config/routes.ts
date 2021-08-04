@@ -15,7 +15,23 @@
       },
     ],
   },
+  {
+    path: '/log',
+    name: '日志管理',
+    routes: [
+      {
+        path: "/log/loginLog",
+        component: './management/loginLog',
+        name:'loginLog',
+      },
 
+      {
+        path: "/log/operateLog",
+        component: './management/operateLog',
+        name:'operateLog'
+      },
+    ]
+  },
   {
     path:'/admin',
     name: '系统管理',
@@ -51,8 +67,8 @@
       }
       ,
       {
-        path: "/admin/log",
-        component: './management/log',
+        path: "/admin/operateLog",
+        component: './management/operateLog',
         name:'log'
       }
       ,

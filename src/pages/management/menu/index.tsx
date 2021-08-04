@@ -291,7 +291,15 @@ const Index: React.FC = () => {
              visible={isModalVisible} onOk={item => {
         const formDate = form.getFieldValue("menu");
         if (menuTitle == '添加菜单') {
-          addMenu(formDate);
+          menuData.name = formDate.name;
+          menuData.parentId = formDate.parentId;
+          menuData.icon = formDate.icon.file.response.data;
+          menuData.sort = formDate.sort;
+          menuData.component = formDate.component;
+          menuData.path = formDate.path;
+          menuData.redirect = formDate.redirect;
+          menuData.visible = formDate.visible;
+          addMenu(menuData);
         } else {
           menuData.name = formDate.name;
           menuData.parentId = formDate.parentId;

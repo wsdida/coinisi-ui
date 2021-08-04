@@ -58,7 +58,6 @@ const Role: React.FC = () => {
     for (let i = 0; i < result.length; i++) {
       result[i].key = result[i].postId;
     };
-    console.log("res",result);
     // @ts-ignore
     setPostData(result);
   };

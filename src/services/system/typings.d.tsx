@@ -1,3 +1,5 @@
+
+
 declare namespace SYSTEM {
   type SelectTree = {
     value?: string;
@@ -50,8 +52,30 @@ declare namespace SYSTEM {
     size?: number;
     total?: number;
     pages?: number;
-    records?: [];
+    records?: any ;
     searchCount?: boolean;
+  }
+  type OperaLog ={
+    ids: string;
+    key: string;
+    id: string;
+    title: string;
+    businessType: string;
+    method: string;
+    requestMethod: string;
+    operatorType: string;
+    operName: string;
+    deptName: string;
+    operUrl: string;
+    operIp: string;
+    operLocation: string;
+    operParam: string;
+    jsonResult: string;
+    status: string;
+    errorMsg: string;
+    operTime: any;
+    current: string;
+    size: string;
   }
   type User ={
     id?: string;
@@ -104,6 +128,7 @@ type Post ={
     remark?:string;
 }
 type Log ={
+    key?: string;
     id?: string;
   loginName?: string;
   ip?: string;
